@@ -1010,22 +1010,25 @@ public:
              * @param pnodeId initialization value for nodeId member.
              * @param pnodeConnectionId initialization value for nodeConnectionId member.
              */
-            inline RouteIdComparable(NodeId pnodeId, NodeConnectionId pnodeConnectionId) noexcept
+            RouteIdComparable(NodeId pnodeId, NodeConnectionId pnodeConnectionId) noexcept
                 : nodeId(pnodeId),
                   nodeConnectionId(pnodeConnectionId)
             {
             }
-            /**
-             * @brief Assign operator with another route-id.
-             * @param other another route-id.
-             * @return A reference to this instance.
-             */
-            inline RouteIdComparable &operator=(const RouteIdComparable &other) noexcept
+            
+            RouteIdComparable &operator=(const RouteIdComparable &other) noexcept
             {
                 nodeId = other.nodeId;
                 nodeConnectionId = other.nodeConnectionId;
                 return *this;
             }
+            
+            // (copy ctor)
+            RouteIdComparable(const RouteIdComparable &other) noexcept
+                : nodeId(other.nodeId), nodeConnectionId(other.nodeConnectionId)
+            {
+            }
+            
             /**
              * @brief Assign operator to null. Which invalidates route-id.
              * @param tredzone::null represents the invalid value of route-id.
@@ -1113,36 +1116,40 @@ public:
          */
         class RouteId : public RouteIdComparable
         {
-          public:
+        public:
+        
             typedef RouteIdComparable::NodeConnectionId NodeConnectionId;
 
             /**
              * @brief Default constructor. Initializes this route-id to invalid.
              */
             inline RouteId() noexcept {}
-            /**
-             * @brief Assign operator with another route-id.
-             * @param other another route-id.
-             * @return A reference to this instance.
-             */
-            inline RouteId &operator=(const RouteId &other) noexcept
+            
+            RouteId &operator=(const RouteId &other) noexcept
             {
                 RouteIdComparable::operator=(other);
                 nodeConnection = other.nodeConnection;
                 return *this;
             }
+            
+            RouteId(const RouteId &other) noexcept
+                : RouteIdComparable(other), nodeConnection(other.nodeConnection)
+            {
+            }
+            
             /**
              * @brief Assign operator to null. Which invalidates route-id.
              * @param tredzone::null represents the invalid value of route-id.
              * @return A reference to this instance.
              */
-            inline RouteId &operator=(const Null &null) noexcept
+            RouteId &operator=(const Null &null) noexcept
             {
                 RouteIdComparable::operator=(null);
                 return *this;
             }
 
-          private:
+        private:
+          
             friend class Actor;
             friend class AsyncNodesHandle;
             friend class EngineToEngineConnector;
@@ -1499,7 +1506,7 @@ public:
      * This method causes the event-loop (cpu-core) running this actor
      * to call onCallback() <b>once</b> on the next loop iteration.
      * Calling this method multiple times will always produce the same
-     * effect as calling it a single time.
+     * effect as calling it a single time.
      * @note _Callback does not need to be of polymorphic (virtual) type.
      * @param callbackHandler instance of _Callback implementing the onCallback() method.
      */

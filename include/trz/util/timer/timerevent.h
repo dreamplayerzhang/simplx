@@ -71,11 +71,15 @@ struct TimeOutEvent: Actor::Event {
 	inline static void nameToOStream(std::ostream& s, const Event&) {
 		s << "tredzone::timer::TimeOutEvent";
 	}
-	inline static void contentToOStream(std::ostream& s, const Event& event) {
+	inline static void contentToOStream(std::ostream& s, const Event& event)
+    {
 		time_t tsec = static_cast<const TimeOutEvent&>(event).utcDateTime.extractSeconds();
-		struct tm* t = gmtime(&tsec);
-		s << "utcTime=" << t->tm_mday << '/' << (t->tm_mon + 1) << '/' << (t->tm_year + 1900)
-				<< '-' << t->tm_hour << ':' << t->tm_min << ':' << t->tm_sec << '.';
+		struct tm t;
+
+        gmtime_r(&tsec, &t);        // (safe version w/out static var)
+        
+		s << "utcTime=" << t.tm_mday << '/' << (t.tm_mon + 1) << '/' << (t.tm_year + 1900)
+				<< '-' << t.tm_hour << ':' << t.tm_min << ':' << t.tm_sec << '.';
 		char cfill = s.fill('0');
 		s.width(3);
 		s << std::right << (static_cast<const TimeOutEvent&>(event).utcDateTime.extractNanoseconds() / 1000000);

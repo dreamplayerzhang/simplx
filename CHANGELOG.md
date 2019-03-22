@@ -12,7 +12,11 @@ Sub-sections: Added, Removed, Depreceted </br>
 ### Refactored
 --->
 
+## [2.6.10] - 2019-03-22
 
+- CWE and readability fixes
+
+  
 ## [2.6.9] - 2019-03-15
 
 - upgraded to gcc 8.2 & clang 4.0 compatibility
